@@ -13,6 +13,7 @@ class Opcode {
 public:
     string getChars(const int& opcode);
     string getBin(int hex);
+    int getHex(string bin);
 };
 
 #endif //ASSIGNMENT_1_OPCODE_H
