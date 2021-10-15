@@ -8,6 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.cpp" "D:/School/College/5th Semester/CS 530/Assignment 1/cmake-build-debug/CMakeFiles/Assignment_1.dir/Opcode.cpp.obj"
+  "D:/School/College/5th Semester/CS 530/Assignment 1/disass.cpp" "D:/School/College/5th Semester/CS 530/Assignment 1/cmake-build-debug/CMakeFiles/Assignment_1.dir/disass.cpp.obj"
   "D:/School/College/5th Semester/CS 530/Assignment 1/main.cpp" "D:/School/College/5th Semester/CS 530/Assignment 1/cmake-build-debug/CMakeFiles/Assignment_1.dir/main.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

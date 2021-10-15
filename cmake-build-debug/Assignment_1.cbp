@@ -80,6 +80,18 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.cpp">
+			<Option target="Assignment_1"/>
+		</Unit>
+		<Unit filename="D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.h">
+			<Option target="Assignment_1"/>
+		</Unit>
+		<Unit filename="D:/School/College/5th Semester/CS 530/Assignment 1/disass.cpp">
+			<Option target="Assignment_1"/>
+		</Unit>
+		<Unit filename="D:/School/College/5th Semester/CS 530/Assignment 1/disass.h">
+			<Option target="Assignment_1"/>
+		</Unit>
 		<Unit filename="D:/School/College/5th Semester/CS 530/Assignment 1/main.cpp">
 			<Option target="Assignment_1"/>
 		</Unit>

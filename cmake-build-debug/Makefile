@@ -128,6 +128,54 @@ Assignment_1/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Assignment_1.dir\build.make CMakeFiles/Assignment_1.dir/build
 .PHONY : Assignment_1/fast
 
+Opcode.obj: Opcode.cpp.obj
+.PHONY : Opcode.obj
+
+# target to build an object file
+Opcode.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Assignment_1.dir\build.make CMakeFiles/Assignment_1.dir/Opcode.cpp.obj
+.PHONY : Opcode.cpp.obj
+
+Opcode.i: Opcode.cpp.i
+.PHONY : Opcode.i
+
+# target to preprocess a source file
+Opcode.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Assignment_1.dir\build.make CMakeFiles/Assignment_1.dir/Opcode.cpp.i
+.PHONY : Opcode.cpp.i
+
+Opcode.s: Opcode.cpp.s
+.PHONY : Opcode.s
+
+# target to generate assembly for a file
+Opcode.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Assignment_1.dir\build.make CMakeFiles/Assignment_1.dir/Opcode.cpp.s
+.PHONY : Opcode.cpp.s
+
+disass.obj: disass.cpp.obj
+.PHONY : disass.obj
+
+# target to build an object file
+disass.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Assignment_1.dir\build.make CMakeFiles/Assignment_1.dir/disass.cpp.obj
+.PHONY : disass.cpp.obj
+
+disass.i: disass.cpp.i
+.PHONY : disass.i
+
+# target to preprocess a source file
+disass.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Assignment_1.dir\build.make CMakeFiles/Assignment_1.dir/disass.cpp.i
+.PHONY : disass.cpp.i
+
+disass.s: disass.cpp.s
+.PHONY : disass.s
+
+# target to generate assembly for a file
+disass.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Assignment_1.dir\build.make CMakeFiles/Assignment_1.dir/disass.cpp.s
+.PHONY : disass.cpp.s
+
 main.obj: main.cpp.obj
 .PHONY : main.obj
 
@@ -161,6 +209,12 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... Assignment_1
+	@echo ... Opcode.obj
+	@echo ... Opcode.i
+	@echo ... Opcode.s
+	@echo ... disass.obj
+	@echo ... disass.i
+	@echo ... disass.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
