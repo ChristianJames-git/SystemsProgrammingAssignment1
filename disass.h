@@ -14,10 +14,10 @@
 class Disass {
 public:
     void openFile (char *objFile, char *symFile);
+    void closeOutStream();
 private:
     void readInObj();
     void readInSym();
-    void closeOutStream();
 
     ifstream inStream;
     ofstream lstStream;

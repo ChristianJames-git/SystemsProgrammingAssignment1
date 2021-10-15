@@ -10,8 +10,9 @@
 using namespace std;
 
 class Opcode {
-    public:
-        string getChars(string opcode);
+public:
+    string getChars(const int& opcode);
+    string getBin(int hex);
 };
 
 #endif //ASSIGNMENT_1_OPCODE_H
