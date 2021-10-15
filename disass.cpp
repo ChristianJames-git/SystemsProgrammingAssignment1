@@ -4,9 +4,6 @@
 
 #include "disass.h"
 
-ifstream objStream;
-ifstream symStream;
-ofstream lstStream("out.lst");
 
 /*
  * Implements openFile
@@ -14,24 +11,49 @@ ofstream lstStream("out.lst");
  * Creates and opens output stream to output file
  */
 void Disass::openFile(char *objFile, char *symFile) {
-    objStream.open(objFile);
-    if (!objStream.is_open()) {
+    inStream.open(objFile);
+    if (!inStream.is_open()) {
         cout << ".obj file missing" << endl;
         exit(EXIT_FAILURE);
     }
-    symStream.open(symFile);
-    if (!symStream.is_open()) {
+    readInObj();
+    inStream.close();
+    inStream.open(symFile);
+    if (!inStream.is_open()) {
         cout << ".sym file missing" << endl;
         exit(EXIT_FAILURE);
     }
-    readIn();
-    objStream.close();
-    symStream.close();
+    readInSym();
+    inStream.close();
+    lstStream.open("out.lst", ios::out);
+    if (!lstStream.is_open()) {
+        cout << "Error in creating file" << endl;
+        exit(EXIT_FAILURE);
+    }
+}
+void Disass::closeOutStream() {
+    if (lstStream.is_open())
+        lstStream.close();
+    else {
+        cout << "Output not open" << endl;
+        exit(EXIT_FAILURE);
+    }
 }
 
 /*
  *
  */
-void Disass::readIn() {
-    
+void Disass::readInObj() {
+    string nextLine;
+    while (inStream.good()) {
+        getline(inStream, nextLine);
+        objCode.push_back(nextLine);
+    }
+};
+
+/*
+ *
+ */
+void Disass::readInSym() {
+
 }

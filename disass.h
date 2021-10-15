@@ -15,7 +15,17 @@ class Disass {
 public:
     void openFile (char *objFile, char *symFile);
 private:
-    void readIn();
+    void readInObj();
+    void readInSym();
+    void closeOutStream();
+
+    ifstream inStream;
+    ofstream lstStream;
+    vector<string> objCode;
+    int startAddress;
+    int baseAddress;
+    int currAddress;
+    int progLength;
 };
 
 #endif //ASSIGNMENT_1_DISASS_H
