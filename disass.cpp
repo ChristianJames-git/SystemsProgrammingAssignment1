@@ -31,7 +31,7 @@ void Disass::disassemble() {
  * Creates and opens output stream to output file
  */
 void Disass::openFile(char *objFile, char *symFile) {
-    inStream.open(objFile);
+    inStream.open("test.obj");
     if (!inStream.is_open()) {
         cout << ".obj file missing" << endl;
         exit(EXIT_FAILURE);
