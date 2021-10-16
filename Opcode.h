@@ -11,9 +11,16 @@ using namespace std;
 
 class Opcode {
 public:
-    string getChars(const int& opcode);
+    struct toReturn {
+        string mnemonic;
+        int format;
+    };
+    toReturn translate(int hex);
+private:
+    string getChars(int hex);
     string getBin(int hex);
     int getHex(string bin);
+    int getFormat(string mnemonic, int lastHex);
 };
 
 #endif //ASSIGNMENT_1_OPCODE_H

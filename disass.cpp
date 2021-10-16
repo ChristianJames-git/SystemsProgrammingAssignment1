@@ -35,7 +35,7 @@ void Disass::handleHeader(int line) {
 }
 
 void Disass::handleText(int line) {
-
+    int textSize = strtol(objCode[line].substr(7, 2).c_str(), nullptr, 16);
 }
 
 void Disass::handleEnd(int line) {

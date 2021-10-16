@@ -6,6 +6,12 @@
 
 #IncludeRegexTransform: 
 
+D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.cpp
+Opcode.h
+D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.h
+cmath
+-
+
 D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.h
 string
 -
@@ -29,4 +35,12 @@ cstdlib
 -
 iomanip
 -
+
+D:/School/College/5th Semester/CS 530/Assignment 1/main.cpp
+iostream
+-
+Opcode.h
+D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.h
+disass.h
+D:/School/College/5th Semester/CS 530/Assignment 1/disass.h
 
