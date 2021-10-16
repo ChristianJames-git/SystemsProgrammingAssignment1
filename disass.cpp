@@ -8,10 +8,10 @@
  * Master function
  */
 void Disass::disassemble() {
-    for (auto & i : objCode) {
-        switch (i[0]) {
+    for (int i = 0 ; i < objCode.size() ; i++) {
+        switch (objCode[i][0]) {
             case 'H':
-                //Deal with Header
+                headerLine(i);
                 break;
             case 'T':
                 //Deal with Text
@@ -23,6 +23,23 @@ void Disass::disassemble() {
                 break;
         }
     }
+}
+
+void Disass::headerLine(int line) {
+    progName = objCode[line].substr(1, 6);
+    startAddress = strtol(objCode[line].substr(7, 6).c_str(), nullptr, 16); //strtol(string to convert, end, base)
+    currAddress = startAddress;
+    progLength = strtol(objCode[line].substr(13, 6).c_str(), nullptr, 16);
+    printAddress(currAddress);
+    lstStream << progName << "  " << "START   " << startAddress << endl;
+}
+
+void Disass::textLine(int line) {
+
+}
+
+void Disass::endLine(int line) {
+
 }
 
 /*
@@ -75,5 +92,9 @@ void Disass::readInObj() {
  * Reads in SymTab and LitTab
  */
 void Disass::readInSym() {
+    //TBD
+}
 
+void Disass::printAddress(int address) {
+    lstStream << hex << setw(4) << setfill('0') << address << " ";
 }

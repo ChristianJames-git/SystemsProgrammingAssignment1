@@ -17,7 +17,7 @@ D:/School/College/5th Semester/CS 530/Assignment 1/disass.h
 D:/School/College/5th Semester/CS 530/Assignment 1/disass.h
 Opcode.h
 D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.h
-stdio.h
+cstdio
 -
 iostream
 -
@@ -25,4 +25,16 @@ fstream
 -
 vector
 -
+cstdlib
+-
+iomanip
+-
+
+D:/School/College/5th Semester/CS 530/Assignment 1/main.cpp
+iostream
+-
+Opcode.h
+D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.h
+disass.h
+D:/School/College/5th Semester/CS 530/Assignment 1/disass.h
 

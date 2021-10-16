@@ -6,10 +6,12 @@
 #define ASSIGNMENT_1_DISASS_H
 
 #include "Opcode.h"
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <cstdlib>
+#include <iomanip>
 
 class Disass {
 public:
@@ -19,10 +21,15 @@ public:
 private:
     void readInObj();
     void readInSym();
+    void headerLine(int line);
+    void textLine(int line);
+    void endLine(int line);
+    void printAddress (int address);
 
     ifstream inStream;
     ofstream lstStream;
     vector<string> objCode;
+    string progName;
     int startAddress;
     int baseAddress;
     int xIndex;
