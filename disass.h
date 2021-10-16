@@ -21,9 +21,9 @@ public:
 private:
     void readInObj();
     void readInSym();
-    void headerLine(int line);
-    void textLine(int line);
-    void endLine(int line);
+    void handleHeader(int line);
+    void handleText(int line);
+    void handleEnd(int line);
     void printAddress (int address);
 
     ifstream inStream;

@@ -11,13 +11,13 @@ void Disass::disassemble() {
     for (int i = 0 ; i < objCode.size() ; i++) {
         switch (objCode[i][0]) {
             case 'H':
-                headerLine(i);
+                handleHeader(i);
                 break;
             case 'T':
-                //Deal with Text
+                handleText(i);
                 break;
             case 'E':
-                //Deal with End
+                handleEnd(i);
                 break;
             default:
                 break;
@@ -25,7 +25,7 @@ void Disass::disassemble() {
     }
 }
 
-void Disass::headerLine(int line) {
+void Disass::handleHeader(int line) {
     progName = objCode[line].substr(1, 6);
     startAddress = strtol(objCode[line].substr(7, 6).c_str(), nullptr, 16); //strtol(string to convert, end, base)
     currAddress = startAddress;
@@ -34,12 +34,12 @@ void Disass::headerLine(int line) {
     lstStream << progName << "  " << "START   " << startAddress << endl;
 }
 
-void Disass::textLine(int line) {
+void Disass::handleText(int line) {
 
 }
 
-void Disass::endLine(int line) {
-
+void Disass::handleEnd(int line) {
+    lstStream << setfill(' ') << setw(16) << "END" << setw(11) << progName << endl;
 }
 
 /*
