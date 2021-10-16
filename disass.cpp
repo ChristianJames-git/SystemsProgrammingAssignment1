@@ -68,7 +68,7 @@ void Disass::openFile(char *objFile, char *symFile) {
         exit(EXIT_FAILURE);
     }
     int i = 2;
-    for ( ; symStorage[i+1].substr(0, 4) != "Name" ; i++) { //loops through rows of sym table
+    for ( ; symStorage[i].substr(0, 4) != "Name" ; i++) { //loops through rows of sym table
         cout << symStorage[i] << endl;
         struct sym a;
         int temp = 0;
@@ -76,8 +76,24 @@ void Disass::openFile(char *objFile, char *symFile) {
             temp++;
         a.symbol = symStorage[i].substr(0, temp); //stores symbol
         a.address = strtol(symStorage[i].substr(8, 6).c_str(), nullptr, 16);
+        symTab.push_back(a);
     }
-    //for (i += 3 ; i < symStorage)
+    for (int j = i+2 ; j < symStorage.size() ; j++) {
+        cout << symStorage[j] << endl;
+        struct lit a;
+        a.length = (unsigned char)symStorage[j][20];
+        int temp = 0;
+        while (symStorage[j][temp] != ' ') //counts name char length
+            temp++;
+        if (temp == 0) {
+            a.litconst = symStorage[j].substr(8, a.length+4);
+        } else {
+            a.name = symStorage[j].substr(0, temp); //stores name
+            a.litconst = symStorage[j].substr(8, a.length+3);
+        }
+        a.address = strtol(symStorage[j].substr(24, 6).c_str(), nullptr, 16);
+        litTab.push_back(a);
+    }
 }
 void Disass::closeOutStream() {
     if (lstStream.is_open())
@@ -95,6 +111,8 @@ void Disass::readIn(vector<string> *storage) {
     string nextLine;
     while (inStream.good()) {
         getline(inStream, nextLine);
+        if (nextLine.empty())
+            continue;
         storage->push_back(nextLine);
     }
 };
