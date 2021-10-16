@@ -4,6 +4,26 @@
 
 #include "disass.h"
 
+/*
+ * Master function
+ */
+void Disass::disassemble() {
+    for (auto & i : objCode) {
+        switch (i[0]) {
+            case 'H':
+                //Deal with Header
+                break;
+            case 'T':
+                //Deal with Text
+                break;
+            case 'E':
+                //Deal with End
+                break;
+            default:
+                break;
+        }
+    }
+}
 
 /*
  * Implements openFile
@@ -41,7 +61,7 @@ void Disass::closeOutStream() {
 }
 
 /*
- *
+ * Reads in Object Code into vector
  */
 void Disass::readInObj() {
     string nextLine;
@@ -52,7 +72,7 @@ void Disass::readInObj() {
 };
 
 /*
- *
+ * Reads in SymTab and LitTab
  */
 void Disass::readInSym() {
 

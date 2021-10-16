@@ -15,6 +15,7 @@ class Disass {
 public:
     void openFile (char *objFile, char *symFile);
     void closeOutStream();
+    void disassemble();
 private:
     void readInObj();
     void readInSym();
@@ -24,6 +25,7 @@ private:
     vector<string> objCode;
     int startAddress;
     int baseAddress;
+    int xIndex;
     int currAddress;
     int progLength;
 };

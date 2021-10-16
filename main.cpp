@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
     }
     auto *disass = new Disass;
     disass->openFile(argv[1], argv[2]);
-    //disass->disassemble();
+    disass->disassemble();
     disass->closeOutStream();
     return 0;
 }
