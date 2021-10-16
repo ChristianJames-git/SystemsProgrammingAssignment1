@@ -21,6 +21,7 @@ Opcode::toReturn Opcode::translate(int hex) {
     toReturn info;
     info.mnemonic = getChars(hex/16);
     info.format = getFormat(info.mnemonic, hex % 16);
+    return info;
 }
 
 string Opcode::getChars(int hex) {

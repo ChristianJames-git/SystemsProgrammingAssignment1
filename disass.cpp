@@ -53,14 +53,14 @@ void Disass::openFile(char *objFile, char *symFile) {
         cout << ".obj file missing" << endl;
         exit(EXIT_FAILURE);
     }
-    readInObj();
+    readIn(&objCode);
     inStream.close();
     inStream.open(symFile);
     if (!inStream.is_open()) {
         cout << ".sym file missing" << endl;
         exit(EXIT_FAILURE);
     }
-    readInSym();
+    readIn(&symStorage);
     inStream.close();
     lstStream.open("out.lst", ios::out);
     if (!lstStream.is_open()) {
@@ -78,22 +78,15 @@ void Disass::closeOutStream() {
 }
 
 /*
- * Reads in Object Code into vector
+ * Reads in the current open in-file into the vector pointed at
  */
-void Disass::readInObj() {
+void Disass::readIn(vector<string> *storage) {
     string nextLine;
     while (inStream.good()) {
         getline(inStream, nextLine);
-        objCode.push_back(nextLine);
+        storage->push_back(nextLine);
     }
 };
-
-/*
- * Reads in SymTab and LitTab
- */
-void Disass::readInSym() {
-    //TBD
-}
 
 void Disass::printAddress(int address) {
     lstStream << hex << setw(4) << setfill('0') << address << " ";

@@ -19,16 +19,16 @@ public:
     void closeOutStream();
     void disassemble();
 private:
-    void readInObj();
-    void readInSym();
-    void handleHeader(int line);
-    void handleText(int line);
-    void handleEnd(int line);
-    void printAddress (int address);
+    void readIn(vector<string> *storage);
+    void handleHeader(int);
+    void handleText(int);
+    void handleEnd(int);
+    void printAddress (int);
 
     ifstream inStream;
     ofstream lstStream;
     vector<string> objCode;
+    vector<string> symStorage;
     string progName;
     int startAddress;
     int baseAddress;
