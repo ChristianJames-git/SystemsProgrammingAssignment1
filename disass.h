@@ -7,7 +7,6 @@
 
 #include "Opcode.h"
 #include <cstdio>
-#include <iostream>
 #include <fstream>
 #include <vector>
 #include <cstdlib>

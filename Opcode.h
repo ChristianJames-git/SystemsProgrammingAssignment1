@@ -6,21 +6,22 @@
 #define ASSIGNMENT_1_OPCODE_H
 
 #include <string>
+#include <bitset>
+#include <iostream>
 
 using namespace std;
 
 class Opcode {
 public:
-    struct toReturn {
+    struct opCodeInfo {
         string mnemonic;
         int format;
     };
-    toReturn translate(int hex);
+    static opCodeInfo translate(int hex);
 private:
-    string getChars(int hex);
-    string getBin(int hex);
-    int getHex(string bin);
-    int getFormat(string mnemonic, int lastHex);
+    static string getChars(int hex);
+    static bitset<8> getBin(int hex);
+    static int getFormat(const string& mnemonic, int lastHex);
 };
 
 #endif //ASSIGNMENT_1_OPCODE_H

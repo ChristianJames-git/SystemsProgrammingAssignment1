@@ -5,7 +5,7 @@
 #include "disass.h"
 
 /*
- * Master function
+ * Controller public function
  */
 void Disass::disassemble() {
     for (int i = 0 ; i < objCode.size() ; i++) {
@@ -25,6 +25,9 @@ void Disass::disassemble() {
     }
 }
 
+/*
+ * Handles the Header line of the object code
+ */
 void Disass::handleHeader(int line) {
     progName = objCode[line].substr(1, 6);
     startAddress = strtol(objCode[line].substr(7, 6).c_str(), nullptr, 16); //strtol(string to convert, end, base)
@@ -34,10 +37,29 @@ void Disass::handleHeader(int line) {
     lstStream << progName << "  " << "START   " << startAddress << endl;
 }
 
+/*
+ * Handles a Text line of the object code
+ */
 void Disass::handleText(int line) {
+    cout << objCode[line] << endl;
     int textSize = strtol(objCode[line].substr(7, 2).c_str(), nullptr, 16);
+    startAddress = strtol(objCode[line].substr(1, 6).c_str(), nullptr, 16);
+    if (startAddress != currAddress) //check to see if there was a jump in address
+        cout << "missing RESB handling" << endl;
+    currAddress = startAddress;
+    for (int i = 9 ; i < 9 + textSize ; i += 2) {
+        printAddress(currAddress);
+        //for (int l = 0 ; l < litTab.size() ; l++) {
+        //    if ()
+        //}
+        Opcode::opCodeInfo a = Opcode::translate(strtol(objCode[line].substr(i, 3).c_str(), nullptr, 16));
+        cout << a.mnemonic << endl;
+    }
 }
 
+/*
+ * Handles the End line of the object code
+ */
 void Disass::handleEnd(int line) {
     lstStream << setfill(' ') << setw(16) << "END" << setw(11) << progName << endl;
 }
@@ -69,7 +91,6 @@ void Disass::openFile(char *objFile, char *symFile) {
     }
     int i = 2;
     for ( ; symStorage[i].substr(0, 4) != "Name" ; i++) { //loops through rows of sym table
-        cout << symStorage[i] << endl;
         struct sym a;
         int temp = 0;
         while (symStorage[i][temp] != ' ') //counts symbol char length
@@ -79,7 +100,6 @@ void Disass::openFile(char *objFile, char *symFile) {
         symTab.push_back(a);
     }
     for (int j = i+2 ; j < symStorage.size() ; j++) {
-        cout << symStorage[j] << endl;
         struct lit a;
         a.length = (unsigned char)symStorage[j][20];
         int temp = 0;
@@ -117,6 +137,9 @@ void Disass::readIn(vector<string> *storage) {
     }
 };
 
+/*
+ * Helper function to print 4 digit addresses in hex format with buffer 0's
+ */
 void Disass::printAddress(int address) {
     lstStream << hex << setw(4) << setfill('0') << address << " ";
 }
