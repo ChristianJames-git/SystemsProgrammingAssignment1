@@ -67,6 +67,17 @@ void Disass::openFile(char *objFile, char *symFile) {
         cout << "Error in creating file" << endl;
         exit(EXIT_FAILURE);
     }
+    int i = 2;
+    for ( ; symStorage[i+1].substr(0, 4) != "Name" ; i++) { //loops through rows of sym table
+        cout << symStorage[i] << endl;
+        struct sym a;
+        int temp = 0;
+        while (symStorage[i][temp] != ' ') //counts symbol char length
+            temp++;
+        a.symbol = symStorage[i].substr(0, temp); //stores symbol
+        a.address = strtol(symStorage[i].substr(8, 6).c_str(), nullptr, 16);
+    }
+    //for (i += 3 ; i < symStorage)
 }
 void Disass::closeOutStream() {
     if (lstStream.is_open())

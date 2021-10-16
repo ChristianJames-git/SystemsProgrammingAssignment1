@@ -29,6 +29,18 @@ private:
     ofstream lstStream;
     vector<string> objCode;
     vector<string> symStorage;
+    struct sym {
+        string symbol;
+        int address;
+    };
+    struct lit {
+        string name;
+        string litconst;
+        int length;
+        int address;
+    };
+    vector<sym> symTab;
+    vector<lit> litTab;
     string progName;
     int startAddress;
     int baseAddress;
