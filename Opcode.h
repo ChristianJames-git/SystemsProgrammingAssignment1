@@ -20,7 +20,7 @@ public:
     static opCodeInfo translate(int hex);
 private:
     static string getChars(int hex);
-    static bitset<8> getBin(int hex);
+    static bitset<4> getBin(int hex);
     static int getFormat(const string& mnemonic, int lastHex);
 };
 

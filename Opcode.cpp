@@ -29,8 +29,9 @@ Opcode::opCodeInfo Opcode::translate(int hex) {
 }
 
 string Opcode::getChars(int hexIn) {
-    bitset<8> binary = getBin(hexIn);
-    int opcode = int(binary.to_ulong());
+    bitset<4> binary2 = getBin(hexIn%16);
+    binary2[0] = binary2[1] = false;
+    int opcode = (hexIn - hexIn%16) + int(binary2.to_ulong());
     for (int i = 0; i < sizeof(ops)/sizeof(int); i++)
         if (ops[i] == opcode)
             return mnemonics[i];
@@ -38,10 +39,9 @@ string Opcode::getChars(int hexIn) {
     exit(EXIT_FAILURE);
 }
 
-bitset<8> Opcode::getBin(int hex) {
-    bitset<8> binary;
+bitset<4> Opcode::getBin(int hex) {
+    bitset<4> binary;
     binary = hex;
-    binary[0] = binary[1] = false;
     return binary;
 }
 
@@ -49,7 +49,7 @@ int Opcode::getFormat(const string& mnemonic, int lastHex) {
     for (int i = 0; i < format2->size() ; ++i)
         if (mnemonic == format2[i])
             return 2;
-    if (getBin(lastHex)[3] == 1)
+    if (getBin(lastHex)[0] == 1)
         return 4;
     return 3;
 }
