@@ -53,7 +53,8 @@ void Disass::handleText(int line) {
         //    if ()
         //}
         Opcode::opCodeInfo a = Opcode::translate(strtol(objCode[line].substr(i, 3).c_str(), nullptr, 16));
-        cout << a.mnemonic << endl;
+        lstStream << "        " << a.mnemonic << endl;
+        currAddress += a.format;
     }
 }
 

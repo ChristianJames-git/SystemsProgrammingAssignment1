@@ -1,1 +1,8 @@
 0000 Assign  START   0
+0000         LDB
+0003         STX
+0006         LDA
+000a         FIX
+000d         STL
+02c7         CLEAR
+02c9         LDA
