@@ -1,16 +1,16 @@
 0000 Assign  START   0
-0000 FIRST   +LDB
-0004         LDA
-0007         +MULF
-02c7         CLEAR
-02c9 VDEV    +LDA
-02cd         LDX
-02d0 WDEV    LDA
-02d3 WLOOP   LDA
-02d6         +LDA
-02da         LDA
-02dd         LDA
-02e0         +JEQ
-02e3         LDA
-02e6 EADR    RESB
+0000 FIRST   +LDB    
+0004         LDA     
+0007         +MULF   
+02c7         CLEAR   
+02c9 VDEV    +LDA    
+02cd         LDX     
+02d0 WDEV    LDA     
+02d3 WLOOP   LDA     
+02d6         +LDA    
+02da         LDA     
+02dd         LDA     
+02e0         +JEQ    
+02e3         LDA     
+02e6 EADR    RESB    
              END     Assign

@@ -44,8 +44,9 @@ void Disass::handleText(int line) {
     cout << objCode[line] << endl;
     int textSize = strtol(objCode[line].substr(7, 2).c_str(), nullptr, 16);
     startAddress = strtol(objCode[line].substr(1, 6).c_str(), nullptr, 16);
-    if (startAddress != currAddress) //check to see if there was a jump in address
+    if (startAddress != currAddress) { //check to see if there was a jump in address
         cout << "missing RESB handling" << endl;
+    }
     currAddress = startAddress;
     for (int i = 9 ; i < 9 + textSize ;) {
         printAddress(currAddress); //prints address column
@@ -61,19 +62,22 @@ void Disass::handleText(int line) {
                 toPrint = l.name;
                 break;
             }
-        lstStream << left << setw(8) << setfill(' ') << toPrint; //prints symbol if found, otherwise blanks
+        printCol2(toPrint); //prints symbol if found, otherwise blanks
 
         Opcode::opCodeInfo a = Opcode::translate(strtol(objCode[line].substr(i, 3).c_str(), nullptr, 16));
-        if (a.format == 4)
-            lstStream << "+";
-        lstStream << a.mnemonic << endl;
+        printCol3(a.mnemonic, a.format);
+        lstStream << endl;
         currAddress += a.format;
         i += a.format;
     }
     for (auto & s : symTab)
         if (s.address == currAddress) {
             printAddress(s.address);
-            lstStream << left << setw(8) << setfill(' ') << s.symbol << "RESB" << endl;
+            printCol2(s.symbol);
+            printCol2("RESB");
+            //print the number
+            lstStream << endl;
+            currAddress += 3;
         }
 }
 
@@ -162,4 +166,15 @@ void Disass::readIn(vector<string> *storage) {
  */
 void Disass::printAddress(int address) {
     lstStream << setw(4) << setfill('0') << right << hex << address << " ";
+}
+void Disass::printCol2(const string& toPrint) {
+    lstStream << left << setw(8) << setfill(' ') << toPrint;
+}
+void Disass::printCol3(const string& mnemonic, int format) {
+    string s = "+";
+    if (format == 4)
+        s += mnemonic;
+    else
+        s = mnemonic;
+    printCol2(s);
 }

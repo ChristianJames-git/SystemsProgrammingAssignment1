@@ -22,7 +22,9 @@ private:
     void handleHeader(int);
     void handleText(int);
     void handleEnd(int);
-    void printAddress (int);
+    void printAddress(int);
+    void printCol2(const string&);
+    void printCol3(const string&, int);
 
     ifstream inStream;
     ofstream lstStream;
