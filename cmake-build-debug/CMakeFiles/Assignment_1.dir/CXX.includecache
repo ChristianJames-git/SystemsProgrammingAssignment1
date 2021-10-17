@@ -6,17 +6,29 @@
 
 #IncludeRegexTransform: 
 
-D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.cpp
-Opcode.h
-D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.h
-cmath
--
-
 D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.h
 string
 -
 bitset
 -
 iostream
+-
+
+D:/School/College/5th Semester/CS 530/Assignment 1/disass.cpp
+disass.h
+D:/School/College/5th Semester/CS 530/Assignment 1/disass.h
+
+D:/School/College/5th Semester/CS 530/Assignment 1/disass.h
+Opcode.h
+D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.h
+cstdio
+-
+fstream
+-
+vector
+-
+cstdlib
+-
+iomanip
 -
 

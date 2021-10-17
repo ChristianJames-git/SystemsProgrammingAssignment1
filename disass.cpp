@@ -47,14 +47,24 @@ void Disass::handleText(int line) {
     if (startAddress != currAddress) //check to see if there was a jump in address
         cout << "missing RESB handling" << endl;
     currAddress = startAddress;
-    for (int i = 9 ; i < 9 + textSize ; i += 2) {
-        printAddress(currAddress);
-        //for (int l = 0 ; l < litTab.size() ; l++) {
-        //    if ()
-        //}
+    for (int i = 9 ; i < 9 + textSize ;) {
+        printAddress(currAddress); //prints address column
+
+        string toPrint;
+        for (auto & s : symTab) { //searches for address in symTab
+            if (s.address == currAddress) {
+                toPrint = s.symbol;
+                break;
+            }
+        }
+        lstStream << left << setw(8) << setfill(' ') << toPrint; //prints symbol if found, otherwise blanks
+
         Opcode::opCodeInfo a = Opcode::translate(strtol(objCode[line].substr(i, 3).c_str(), nullptr, 16));
-        lstStream << "        " << a.mnemonic << endl;
+        if (a.format == 4)
+            lstStream << "+";
+        lstStream << a.mnemonic << endl;
         currAddress += a.format;
+        i += a.format;
     }
 }
 
@@ -62,7 +72,7 @@ void Disass::handleText(int line) {
  * Handles the End line of the object code
  */
 void Disass::handleEnd(int line) {
-    lstStream << setfill(' ') << setw(16) << "END" << setw(11) << progName << endl;
+    lstStream << setfill(' ') << setw(16) << right << "END" << setw(11) << progName << endl;
 }
 
 /*
@@ -142,5 +152,5 @@ void Disass::readIn(vector<string> *storage) {
  * Helper function to print 4 digit addresses in hex format with buffer 0's
  */
 void Disass::printAddress(int address) {
-    lstStream << hex << setw(4) << setfill('0') << address << " ";
+    lstStream << setw(4) << setfill('0') << right << hex << address << " ";
 }
