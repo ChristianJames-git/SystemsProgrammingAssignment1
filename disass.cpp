@@ -51,12 +51,16 @@ void Disass::handleText(int line) {
         printAddress(currAddress); //prints address column
 
         string toPrint;
-        for (auto & s : symTab) { //searches for address in symTab
+        for (auto & s : symTab) //searches for address in symTab
             if (s.address == currAddress) {
                 toPrint = s.symbol;
                 break;
             }
-        }
+        for (auto & l : litTab)
+            if (l.address == currAddress) {
+                toPrint = l.name;
+                break;
+            }
         lstStream << left << setw(8) << setfill(' ') << toPrint; //prints symbol if found, otherwise blanks
 
         Opcode::opCodeInfo a = Opcode::translate(strtol(objCode[line].substr(i, 3).c_str(), nullptr, 16));
@@ -66,6 +70,11 @@ void Disass::handleText(int line) {
         currAddress += a.format;
         i += a.format;
     }
+    for (auto & s : symTab)
+        if (s.address == currAddress) {
+            printAddress(s.address);
+            lstStream << left << setw(8) << setfill(' ') << s.symbol << "RESB" << endl;
+        }
 }
 
 /*
