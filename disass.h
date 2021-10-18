@@ -25,6 +25,8 @@ private:
     void printAddress(int);
     void printCol2(const string&);
     void printCol3(const string&, int);
+    void printCol4();
+    void printObjCol(int, int);
 
     ifstream inStream;
     ofstream lstStream;

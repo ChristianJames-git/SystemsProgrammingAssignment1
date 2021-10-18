@@ -34,7 +34,7 @@ void Disass::handleHeader(int line) {
     currAddress = startAddress;
     progLength = strtol(objCode[line].substr(13, 6).c_str(), nullptr, 16);
     printAddress(currAddress);
-    lstStream << progName << "  " << "START   " << startAddress << endl;
+    lstStream << uppercase << progName << "  " << "START   " << startAddress << endl;
 }
 
 /*
@@ -48,7 +48,8 @@ void Disass::handleText(int line) {
         cout << "missing RESB handling" << endl;
     }
     currAddress = startAddress;
-    for (int i = 9 ; i < 9 + textSize ;) {
+    for (int i = 9 ; i < 9 + textSize*2 ;) { //Each loops hands one line
+        cout << i << endl;
         printAddress(currAddress); //prints address column
 
         string toPrint;
@@ -66,9 +67,14 @@ void Disass::handleText(int line) {
 
         Opcode::opCodeInfo a = Opcode::translate(strtol(objCode[line].substr(i, 3).c_str(), nullptr, 16));
         printCol3(a.mnemonic, a.format);
-        lstStream << endl;
+        printCol4();
+        printObjCol(strtol(objCode[line].substr(i, a.format * 2).c_str(), nullptr, 16), a.format);
         currAddress += a.format;
-        i += a.format;
+        i += a.format*2;
+
+        if (a.mnemonic == "LDB") { //handle Base
+            lstStream << "     " << setw(8) << setfill(' ') << left << "" << "BASE" << endl;
+        }
     }
     for (auto & s : symTab)
         if (s.address == currAddress) {
@@ -177,4 +183,10 @@ void Disass::printCol3(const string& mnemonic, int format) {
     else
         s = mnemonic;
     printCol2(s);
+}
+void Disass::printCol4() {
+    lstStream << left << setw(14) << setfill(' ') << "BLANK";
+}
+void Disass::printObjCol(int objCode, int format) {
+    lstStream << right << setw(format*2) << setfill('0') << objCode << endl;
 }
