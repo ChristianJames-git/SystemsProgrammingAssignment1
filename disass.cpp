@@ -32,7 +32,6 @@ void Disass::handleHeader(int line) {
     progName = objCode[line].substr(1, 6);
     startAddress = strtol(objCode[line].substr(7, 6).c_str(), nullptr, 16); //strtol(string to convert, end, base)
     currAddress = startAddress;
-    progLength = strtol(objCode[line].substr(13, 6).c_str(), nullptr, 16);
     printAddress(currAddress);
     lstStream << uppercase << progName << "  " << "START   " << startAddress << endl;
 }
@@ -44,12 +43,21 @@ void Disass::handleText(int line) {
     cout << objCode[line] << endl;
     int textSize = strtol(objCode[line].substr(7, 2).c_str(), nullptr, 16);
     startAddress = strtol(objCode[line].substr(1, 6).c_str(), nullptr, 16);
-    if (startAddress != currAddress) { //check to see if there was a jump in address
-        cout << "missing RESB handling" << endl;
+    for (int i = 0 ; i < symTab.size() ; i++) { //Handles RESB cases
+        if (symTab[i].address >= currAddress && symTab[i].address < startAddress) {
+            printAddress(symTab[i].address);
+            printCol2(symTab[i].symbol);
+            printCol2("RESB");
+            if (i+1 < symTab.size() && symTab[i+1].address < startAddress)
+                printCol2(to_string(symTab[i+1].address - symTab[i].address));
+            else
+                printCol2(to_string(startAddress - symTab[i].address));
+            lstStream << endl;
+            currAddress = symTab[i].address + 1;
+        }
     }
     currAddress = startAddress;
     for (int i = 9 ; i < 9 + textSize*2 ;) { //Each loops hands one line
-        cout << i << endl;
         printAddress(currAddress); //prints address column
 
         string toPrint;
@@ -58,11 +66,20 @@ void Disass::handleText(int line) {
                 toPrint = s.symbol;
                 break;
             }
+        bool litfound = false;
         for (auto & l : litTab)
             if (l.address == currAddress) {
-                toPrint = l.name;
+                litfound = true;
+                printCol2(l.name);
+                printCol2("BYTE");
+                printCol2(l.litconst);
+                lstStream << "      " << l.litconst.substr(2, l.length) << endl;
+                currAddress += l.length/2;
+                i += l.length;
                 break;
             }
+        if (litfound) //Skips to next loops if value found in litTab
+            continue;
         printCol2(toPrint); //prints symbol if found, otherwise blanks
 
         Opcode::opCodeInfo a = Opcode::translate(strtol(objCode[line].substr(i, 3).c_str(), nullptr, 16));
@@ -76,15 +93,6 @@ void Disass::handleText(int line) {
             lstStream << "     " << setw(8) << setfill(' ') << left << "" << "BASE" << endl;
         }
     }
-    for (auto & s : symTab)
-        if (s.address == currAddress) {
-            printAddress(s.address);
-            printCol2(s.symbol);
-            printCol2("RESB");
-            //print the number
-            lstStream << endl;
-            currAddress += 3;
-        }
 }
 
 /*
@@ -185,8 +193,16 @@ void Disass::printCol3(const string& mnemonic, int format) {
     printCol2(s);
 }
 void Disass::printCol4(bitset<6> nixbpe) {
-    lstStream << left << setw(14) << setfill(' ') << "BLANK";
+    string toPrint;
+    if (nixbpe[5] & nixbpe[4] || !nixbpe[5] & !nixbpe[4]) {
+        //Simple Addressing
+    } else if (nixbpe[5] & !nixbpe[4]) {
+        toPrint += '@';
+    } else {
+        toPrint += '#';
+    }
+    lstStream << left << setw(14) << setfill(' ') << toPrint;
 }
-void Disass::printObjCol(int objCode, int format) {
-    lstStream << right << setw(format*2) << setfill('0') << objCode << endl;
+void Disass::printObjCol(int obCode, int format) {
+    lstStream << right << setw(format*2) << setfill('0') << obCode << endl;
 }

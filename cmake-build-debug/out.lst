@@ -1,7 +1,12 @@
 0000 Assign  START   0
-0000 FIRST   +LDB    BLANK         691002C6
+0000 FIRST   +LDB    #             691002C6
              BASE
-0004         STL     BLANK         1722BF
-0007         LDA     BLANK         0222BC
-000A BADR    RESB    
-02C7         CLEAR   BLANK         B400
+0004         STL                   1722BF
+0007         LDA     @             0222BC
+000A BADR    RESB    700     
+02C6 RETADR  RESB    1       
+02C7         CLEAR                 B400
+02C9 VDEV    BYTE    X'F1'       2   0002C9      F1'       2   0002C9
+02E2         +STA    @             000000E3
+02E3         BYTE    =X'000007'  6   0002E3      '000007'  6   0002E3
+             END     Assign

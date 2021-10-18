@@ -49,7 +49,6 @@ private:
     int baseAddress;
     int xIndex;
     int currAddress;
-    int progLength;
 };
 
 #endif //ASSIGNMENT_1_DISASS_H
