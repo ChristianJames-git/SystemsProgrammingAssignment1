@@ -67,7 +67,7 @@ void Disass::handleText(int line) {
 
         Opcode::opCodeInfo a = Opcode::translate(strtol(objCode[line].substr(i, 3).c_str(), nullptr, 16));
         printCol3(a.mnemonic, a.format);
-        printCol4();
+        printCol4(a.nixbpe);
         printObjCol(strtol(objCode[line].substr(i, a.format * 2).c_str(), nullptr, 16), a.format);
         currAddress += a.format;
         i += a.format*2;
@@ -184,7 +184,7 @@ void Disass::printCol3(const string& mnemonic, int format) {
         s = mnemonic;
     printCol2(s);
 }
-void Disass::printCol4() {
+void Disass::printCol4(bitset<6> nixbpe) {
     lstStream << left << setw(14) << setfill(' ') << "BLANK";
 }
 void Disass::printObjCol(int objCode, int format) {

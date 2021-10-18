@@ -24,7 +24,8 @@ const static string format2[] = {"CLEAR", "COMPR", "DIVR", "MULR", "RMO", "SHIFT
 Opcode::opCodeInfo Opcode::translate(int hex) {
     opCodeInfo info;
     info.mnemonic = getChars(hex/16);
-    info.format = getFormat(info.mnemonic, hex % 16);
+    info.nixbpe = getNIXBPE(hex);
+    info.format = getFormat(info.mnemonic, info.nixbpe[5]);
     return info;
 }
 
@@ -45,11 +46,20 @@ bitset<4> Opcode::getBin(int hex) {
     return binary;
 }
 
-int Opcode::getFormat(const string& mnemonic, int lastHex) {
+bitset<6> Opcode::getNIXBPE(int hex) {
+    bitset<4> binary1 = getBin(hex % 16);
+    bitset<4> binary2 = getBin((hex/16) % 16);
+    bitset<6> toReturn;
+    toReturn[0] = binary2[2]; toReturn[1] = binary2[3];
+    for (int i = 2 ; i < 6 ; i++)
+        toReturn[i] = binary1[i-2];
+    return toReturn;
+}
+int Opcode::getFormat(const string& mnemonic, int e) {
     for (int i = 0; i < format2->size() ; ++i)
         if (mnemonic == format2[i])
             return 2;
-    if (getBin(lastHex)[0] == 1)
+    if (e == 1)
         return 4;
     return 3;
 }
