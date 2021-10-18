@@ -72,8 +72,8 @@ void Disass::handleText(int line) {
                 litfound = true;
                 printCol2(l.name);
                 printCol2("BYTE");
-                printCol2(l.litconst);
-                lstStream << "      " << l.litconst.substr(2, l.length) << endl;
+                lstStream << setw(14) << setfill(' ') << left << l.litconst;
+                lstStream << l.litconst.substr(2, l.length) << endl;
                 currAddress += l.length/2;
                 i += l.length;
                 break;
@@ -139,7 +139,7 @@ void Disass::openFile(char *objFile, char *symFile) {
     }
     for (int j = i+2 ; j < symStorage.size() ; j++) {
         struct lit a;
-        a.length = (unsigned char)symStorage[j][20];
+        a.length = symStorage[j][20] - '0';
         int temp = 0;
         while (symStorage[j][temp] != ' ') //counts name char length
             temp++;
