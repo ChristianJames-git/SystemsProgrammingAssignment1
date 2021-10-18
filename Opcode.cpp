@@ -25,7 +25,7 @@ Opcode::opCodeInfo Opcode::translate(int hex) {
     opCodeInfo info;
     info.mnemonic = getChars(hex/16);
     info.nixbpe = getNIXBPE(hex);
-    info.format = getFormat(info.mnemonic, info.nixbpe[5]);
+    info.format = getFormat(info.mnemonic, info.nixbpe[0]);
     return info;
 }
 
@@ -46,13 +46,13 @@ bitset<4> Opcode::getBin(int hex) {
     return binary;
 }
 
-bitset<6> Opcode::getNIXBPE(int hex) {
-    bitset<4> binary1 = getBin(hex % 16);
-    bitset<4> binary2 = getBin((hex/16) % 16);
+bitset<6> Opcode::getNIXBPE(int hexA) {
+    bitset<4> binary1 = getBin(hexA % 16);
+    bitset<4> binary2 = getBin((hexA/16) % 16);
     bitset<6> toReturn;
-    toReturn[0] = binary2[2]; toReturn[1] = binary2[3];
-    for (int i = 2 ; i < 6 ; i++)
-        toReturn[i] = binary1[i-2];
+    toReturn[5] = binary2[1]; toReturn[4] = binary2[0];
+    for (int i = 3 ; i >= 0 ; i--)
+        toReturn[i] = binary1[i];
     return toReturn;
 }
 int Opcode::getFormat(const string& mnemonic, int e) {
