@@ -27,6 +27,7 @@ private:
     void printCol3(const string&, int);
     void printCol4(bitset<6>);
     void printObjCol(int, int);
+    void handleRESB();
 
     ifstream inStream;
     ofstream lstStream;
@@ -49,6 +50,7 @@ private:
     int baseAddress;
     int xIndex;
     int currAddress;
+    int progLength;
 };
 
 #endif //ASSIGNMENT_1_DISASS_H

@@ -30,6 +30,7 @@ void Disass::disassemble() {
  */
 void Disass::handleHeader(int line) {
     progName = objCode[line].substr(1, 6);
+    progLength = strtol(objCode[line].substr(13, 6).c_str(), nullptr, 16);
     startAddress = strtol(objCode[line].substr(7, 6).c_str(), nullptr, 16); //strtol(string to convert, end, base)
     currAddress = startAddress;
     printAddress(currAddress);
@@ -39,10 +40,7 @@ void Disass::handleHeader(int line) {
 /*
  * Handles a Text line of the object code
  */
-void Disass::handleText(int line) {
-    cout << objCode[line] << endl;
-    int textSize = strtol(objCode[line].substr(7, 2).c_str(), nullptr, 16);
-    startAddress = strtol(objCode[line].substr(1, 6).c_str(), nullptr, 16);
+void Disass::handleRESB() {
     for (int i = 0 ; i < symTab.size() ; i++) { //Handles RESB cases
         if (symTab[i].address >= currAddress && symTab[i].address < startAddress) {
             printAddress(symTab[i].address);
@@ -56,6 +54,12 @@ void Disass::handleText(int line) {
             currAddress = symTab[i].address + 1;
         }
     }
+}
+void Disass::handleText(int line) {
+    cout << objCode[line] << endl;
+    int textSize = strtol(objCode[line].substr(7, 2).c_str(), nullptr, 16);
+    startAddress = strtol(objCode[line].substr(1, 6).c_str(), nullptr, 16);
+    handleRESB();
     currAddress = startAddress;
     for (int i = 9 ; i < 9 + textSize*2 ;) { //Each loops hands one line
         printAddress(currAddress); //prints address column
@@ -99,6 +103,8 @@ void Disass::handleText(int line) {
  * Handles the End line of the object code
  */
 void Disass::handleEnd(int line) {
+    startAddress = progLength;
+    handleRESB();
     lstStream << setfill(' ') << setw(16) << right << "END" << setw(11) << progName << endl;
 }
 

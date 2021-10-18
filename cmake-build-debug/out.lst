@@ -16,4 +16,5 @@
 02DC         WD                    DF2FEA
 02DF         +LDA                  031002E3
 02E3         BYTE    =X'000007'    '00000
+02E6 EADR    RESB    700     
              END     Assign
