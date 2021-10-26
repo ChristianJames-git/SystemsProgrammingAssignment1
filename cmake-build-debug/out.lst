@@ -2,7 +2,7 @@
 0000 FIRST   +LDB    #RETADR       6910083E
              BASE    RETADR        
 0004         STL     Invalid       174000
-0007         LDA     @BADR         024000
+0007         LDA     @RETADR       024000
 000A BADR    RESB    2100    
 083E RETADR  RESB    3       
 0841         CLEAR   A             B400

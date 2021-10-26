@@ -46,10 +46,13 @@ void Disass::handleRESB() {
             printAddress(symTab[i].address);
             printCol2(symTab[i].symbol);
             printCol2("RESB");
+            int difference;
             if (i+1 < symTab.size() && symTab[i+1].address < startAddress)
-                printCol2(to_string(symTab[i+1].address - symTab[i].address));
+                difference = symTab[i+1].address - symTab[i].address;
             else
-                printCol2(to_string(startAddress - symTab[i].address));
+                difference = startAddress - symTab[i].address;
+            printCol2(to_string(difference));
+            symTab[i].decimal = difference;
             lstStream << endl;
             currAddress = symTab[i].address + 1;
         }
@@ -112,7 +115,7 @@ void Disass::handleText(int line) {
         string col4 = findCol4(a.nixbpe, disp, a.format);
         printCol4(col4);
         printObjCol(strtol(objCode[line].substr(i, a.format*2).c_str(), nullptr, 16), a.format);
-        if (a.mnemonic == "LDX")
+        if (a.mnemonic == "LDX") //load x
             xIndex = strtol(objCode[line].substr(i+3, 3).c_str(), nullptr, 16);
         currAddress += a.format;
         i += a.format*2;
@@ -175,6 +178,10 @@ void Disass::openFile(char *objFile, char *symFile) {
         a.symbol = symStorage[i].substr(0, temp); //stores symbol
         a.address = strtol(symStorage[i].substr(8, 6).c_str(), nullptr, 16);
         symTab.push_back(a);
+    }
+    for (int j = 0 ; j < symTab.size() ; j++) {
+        if (symTab[j].symbol == "BADR")
+            symTab[j].decimal = symTab[j + 1].address - symTab[j].address;
     }
     for (int j = i+2 ; j < symStorage.size() ; j++) {
         struct lit a;
@@ -251,6 +258,10 @@ string Disass::findCol4(bitset<6> nixbpe, int disp, int format) {
     if (nixbpe[0]) {
         address = disp;
     } else {
+        if (type == 2) { //Immediate Addressing
+            toPrint += to_string(disp);
+            return toPrint;
+        }
         bitset<12> a = disp;
         if (a[11]) {
             a.flip();
@@ -267,13 +278,18 @@ string Disass::findCol4(bitset<6> nixbpe, int disp, int format) {
         }
         address = disp+pcAddress;
         if (disp < -2048 || disp > 2047) {
-            address = disp+baseAddress;
+            address = disp + baseAddress;
             if (disp < 0 || disp > 4095)
                 return "Invalid disp";
         }
-        if (type == 2) {
-            toPrint += to_string(disp);
-            return toPrint;
+        if (type == 1) {
+            cout << hex << address << endl;
+            for (auto & s : symTab)
+                if (s.address == address) {
+                    address += s.decimal;
+                    cout << hex << s.decimal << " " << address << endl;
+                    break;
+                }
         }
     }
     if (nixbpe[3])

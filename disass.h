@@ -38,6 +38,7 @@ private:
     struct sym {
         string symbol;
         int address;
+        int decimal;
     };
     struct lit {
         string name;
