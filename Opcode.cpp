@@ -19,7 +19,7 @@ const static string mnemonics[] = {"ADD",  "ADDF", "ADDR", "AND",    "CLEAR",  "
                                    "STCH", "STF",  "STI",  "STL",    "STS",    "STSW", "STT",   "STX",
                                    "SUB",  "SUBF", "SUBR", "SVC",    "TD",     "TIX",  "TIXR",  "WD"};
 const static string format2[] = {"CLEAR", "COMPR", "DIVR", "MULR", "RMO", "SHIFTL", "SHIFTR", "SUBR", "SVC", "TIXR"};
-
+const string Opcode::registerName[] = {"A", "X", "L", "B", "S", "T", "F", "PC", "SW"};
 Opcode::opCodeInfo Opcode::translate(int hex) {
     opCodeInfo info;
     info.mnemonic = getChars(hex/16);

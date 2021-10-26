@@ -25,6 +25,7 @@ public:
 
     static opCodeInfo translate(int hex);
 
+    const static string registerName[];
 private:
     static string getChars(int hex);
 

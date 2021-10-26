@@ -56,13 +56,12 @@ void Disass::handleRESB() {
     }
 }
 void Disass::handleText(int line) {
-    cout << objCode[line] << endl;
     int textSize = strtol(objCode[line].substr(7, 2).c_str(), nullptr, 16);
     startAddress = strtol(objCode[line].substr(1, 6).c_str(), nullptr, 16);
     handleRESB();
     currAddress = startAddress;
     for (int i = 9 ; i < 9 + textSize*2 ;) { //Each loops hands one line
-        for (auto & l : litTab)
+        for (auto & l : litTab) //Handle LTORG
             if (l.address == currAddress)
                 if (l.name == "*") {
                     lstStream << "     ";
@@ -79,7 +78,7 @@ void Disass::handleText(int line) {
                 break;
             }
         bool litfound = false;
-        for (auto & l : litTab)
+        for (auto & l : litTab) //handle litTab
             if (l.address == currAddress) {
                 litfound = true;
                 string litConst;
@@ -104,13 +103,31 @@ void Disass::handleText(int line) {
 
         Opcode::opCodeInfo a = Opcode::translate(strtol(objCode[line].substr(i, 3).c_str(), nullptr, 16));
         printCol3(a.mnemonic, a.format);
-        printCol4(a.nixbpe);
-        printObjCol(strtol(objCode[line].substr(i, a.format * 2).c_str(), nullptr, 16), a.format);
+        int disp;
+        if (a.format == 2)
+            disp = strtol(objCode[line].substr(i+2, 2).c_str(), nullptr, 16);
+        else
+            disp = strtol(objCode[line].substr(i+3, a.format*2 - 3).c_str(), nullptr, 16);
+        pcAddress = currAddress + a.format;
+        string col4 = findCol4(a.nixbpe, disp, a.format);
+        printCol4(col4);
+        printObjCol(strtol(objCode[line].substr(i, a.format*2).c_str(), nullptr, 16), a.format);
+        if (a.mnemonic == "LDX")
+            xIndex = strtol(objCode[line].substr(i+3, 3).c_str(), nullptr, 16);
         currAddress += a.format;
         i += a.format*2;
 
         if (a.mnemonic == "LDB") { //handle Base
-            lstStream << "     " << setw(8) << setfill(' ') << left << "" << "BASE" << endl;
+            lstStream << "     " << setw(8) << setfill(' ') << left << "" << setw(8) << "BASE";
+            if (col4[0] == '@' || col4[0] == '#')
+                col4 = col4.substr(1, col4.length()-1);
+            printCol4(col4);
+            lstStream << endl;
+            for (auto & s : symTab)
+                if (s.symbol == col4) {
+                    baseAddress = s.address;
+                    break;
+                }
         }
     }
 }
@@ -215,15 +232,70 @@ void Disass::printCol3(const string& mnemonic, int format) {
         s = mnemonic;
     printCol2(s);
 }
-void Disass::printCol4(bitset<6> nixbpe) {
+string Disass::findCol4(bitset<6> nixbpe, int disp, int format) {
     string toPrint;
+    if (format == 2)
+        if (disp < Opcode::registerName->length())
+            return Opcode::registerName[disp];
+    int type;
+    int address;
     if (nixbpe[5] & nixbpe[4] || !nixbpe[5] & !nixbpe[4]) {
-        //Simple Addressing
+        type = 0;
     } else if (nixbpe[5] & !nixbpe[4]) {
-        toPrint += '@';
+        toPrint += "@";
+        type = 1;
     } else {
-        toPrint += '#';
+        toPrint += "#";
+        type = 2;
     }
+    if (nixbpe[0]) {
+        address = disp;
+    } else {
+        bitset<12> a = disp;
+        if (a[11]) {
+            a.flip();
+            bool carry = true;
+            for (int i = 0 ; ; i++) {
+                if (carry) {
+                    a[i] = !a[i];
+                    if (a[i])
+                        carry = false;
+                } else
+                    break;
+            }
+            disp = (int)a.to_ulong() * -1;
+        }
+        address = disp+pcAddress;
+        if (disp < -2048 || disp > 2047) {
+            address = disp+baseAddress;
+            if (disp < 0 || disp > 4095)
+                return "Invalid disp";
+        }
+        if (type == 2) {
+            toPrint += to_string(disp);
+            return toPrint;
+        }
+    }
+    if (nixbpe[3])
+        address += xIndex;
+    toPrint += findInTab(address);
+    if (nixbpe[3])
+        toPrint += ", X";
+    return toPrint;
+}
+string Disass::findInTab(int address) {
+    for (auto & s : symTab)
+        if (s.address == address)
+            return s.symbol;
+    for (auto & l : litTab)
+        if (l.address == address) {
+            if (l.name == "*")
+                return l.litconst;
+            return l.name;
+        }
+    return "Invalid";
+}
+void Disass::printCol4(const string& toPrint) {
     lstStream << left << setw(14) << setfill(' ') << toPrint;
 }
 void Disass::printObjCol(int obCode, int format) {

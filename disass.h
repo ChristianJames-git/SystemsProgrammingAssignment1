@@ -25,7 +25,9 @@ private:
     void printAddress(int);
     void printCol2(const string&);
     void printCol3(const string&, int);
-    void printCol4(bitset<6>);
+    string findCol4(bitset<6>, int, int);
+    string findInTab(int);
+    void printCol4(const string&);
     void printObjCol(int, int);
     void handleRESB();
 
@@ -48,6 +50,7 @@ private:
     string progName;
     int startAddress;
     int baseAddress;
+    int pcAddress;
     int xIndex;
     int currAddress;
     int progLength;
