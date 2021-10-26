@@ -276,18 +276,14 @@ string Disass::findCol4(bitset<6> nixbpe, int disp, int format) {
             }
             disp = (int)a.to_ulong() * -1;
         }
-        address = disp+pcAddress;
-        if (disp < -2048 || disp > 2047) {
+        if (nixbpe[1])
+            address = disp + pcAddress;
+        if (nixbpe[2])
             address = disp + baseAddress;
-            if (disp < 0 || disp > 4095)
-                return "Invalid disp";
-        }
         if (type == 1) {
-            cout << hex << address << endl;
             for (auto & s : symTab)
                 if (s.address == address) {
-                    address += s.decimal;
-                    cout << hex << s.decimal << " " << address << endl;
+                    //address += s.decimal;
                     break;
                 }
         }
@@ -296,7 +292,7 @@ string Disass::findCol4(bitset<6> nixbpe, int disp, int format) {
         address += xIndex;
     toPrint += findInTab(address);
     if (nixbpe[3])
-        toPrint += ", X";
+        toPrint += ",X";
     return toPrint;
 }
 string Disass::findInTab(int address) {
