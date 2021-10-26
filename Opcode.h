@@ -1,5 +1,9 @@
 //
-// Created by socce on 10/14/2021.
+// Created by socce on 10/14/2021.tatic string getChars(int hex);
+//    static bitset<6> getNIXBPE(int hex);
+//    static bitset<4> getBin(int hex);
+//    static int getFormat(const string&, int);
+//};
 //
 
 #ifndef ASSIGNMENT_1_OPCODE_H
@@ -18,12 +22,16 @@ public:
         int format;
         bitset<6> nixbpe;
     };
+
     static opCodeInfo translate(int hex);
+
 private:
     static string getChars(int hex);
-    static bitset<6> getNIXBPE(int hex);
-    static bitset<4> getBin(int hex);
-    static int getFormat(const string&, int);
-};
 
+    static bitset<6> getNIXBPE(int hex);
+
+    static bitset<4> getBin(int hex);
+
+    static int getFormat(const string &, int);
+};
 #endif //ASSIGNMENT_1_OPCODE_H
