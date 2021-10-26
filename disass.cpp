@@ -62,6 +62,14 @@ void Disass::handleText(int line) {
     handleRESB();
     currAddress = startAddress;
     for (int i = 9 ; i < 9 + textSize*2 ;) { //Each loops hands one line
+        for (auto & l : litTab)
+            if (l.address == currAddress)
+                if (l.name == "*") {
+                    lstStream << "     ";
+                    printCol2("");
+                    printCol2("LTORG");
+                    lstStream << endl;
+                }
         printAddress(currAddress); //prints address column
 
         string toPrint;
@@ -74,10 +82,18 @@ void Disass::handleText(int line) {
         for (auto & l : litTab)
             if (l.address == currAddress) {
                 litfound = true;
-                printCol2(l.name);
-                printCol2("BYTE");
+                string litConst;
+                if (l.name == "*") {
+                    printCol2("");
+                    printCol2(l.name);
+                    litConst = l.litconst.substr(3, l.length);
+                } else {
+                    printCol2(l.name);
+                    printCol2("BYTE");
+                    litConst = l.litconst.substr(2, l.length);
+                }
                 lstStream << setw(14) << setfill(' ') << left << l.litconst;
-                lstStream << l.litconst.substr(2, l.length) << endl;
+                lstStream << litConst << endl;
                 currAddress += l.length/2;
                 i += l.length;
                 break;
@@ -150,6 +166,7 @@ void Disass::openFile(char *objFile, char *symFile) {
         while (symStorage[j][temp] != ' ') //counts name char length
             temp++;
         if (temp == 0) {
+            a.name = "*";
             a.litconst = symStorage[j].substr(8, a.length+4);
         } else {
             a.name = symStorage[j].substr(0, temp); //stores name
