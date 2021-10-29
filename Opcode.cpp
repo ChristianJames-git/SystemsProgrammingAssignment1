@@ -1,7 +1,3 @@
-//
-// Created by socce on 10/14/2021.
-//
-
 #include "Opcode.h"
 
 const static int ops[] =          {0x18,   0x58,   0x90,   0x40,     0xB4,     0x28,   0x88,    0xA0,

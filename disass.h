@@ -1,7 +1,3 @@
-//
-// Created by socce on 10/15/2021.
-//
-
 #ifndef ASSIGNMENT_1_DISASS_H
 #define ASSIGNMENT_1_DISASS_H
 
@@ -49,6 +45,7 @@ private:
     int pcAddress;
     int xIndex;
     int currAddress;
+    int progStart;
     int progLength;
 };
 

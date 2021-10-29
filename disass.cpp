@@ -1,7 +1,3 @@
-//
-// Created by socce on 10/15/2021.
-//
-
 #include "disass.h"
 
 /*
@@ -33,21 +29,19 @@ void disass::handleHeader(int line) {
     progLength = strtol(objCode[line].substr(13, 6).c_str(), nullptr, 16); //progLength
     startAddress = strtol(objCode[line].substr(7, 6).c_str(), nullptr, 16); //strtol(string to convert, end, base)
     currAddress = startAddress;
+    progStart = startAddress;
     printAddress(currAddress);
     lstStream << uppercase << progName << "  " << "START   " << startAddress << endl; //print first output line
 }
 
-/*
- * Handles a Text line of the object code
- */
-void disass::handleRESB() {
-    for (int i = 0 ; i < symTab.size() ; i++) { //Handles RESB cases
-        if (symTab[i].address >= currAddress && symTab[i].address < startAddress) {
+void disass::handleRESB() { //Handles RESB cases
+    for (int i = 0 ; i < symTab.size() ; i++) {
+        if (symTab[i].address >= currAddress && symTab[i].address < startAddress) { //find symbols not in Object Code defined addresses
             printAddress(symTab[i].address);
             printCol2(symTab[i].symbol);
             printCol2("RESB");
             int difference;
-            if (i+1 < symTab.size() && symTab[i+1].address < startAddress)
+            if (i+1 < symTab.size() && symTab[i+1].address < startAddress) //find value for Col4
                 difference = symTab[i+1].address - symTab[i].address;
             else
                 difference = startAddress - symTab[i].address;
@@ -58,12 +52,16 @@ void disass::handleRESB() {
         }
     }
 }
+
+/*
+ * Handles a Text line of the object code
+ */
 void disass::handleText(int line) {
     int textSize = strtol(objCode[line].substr(7, 2).c_str(), nullptr, 16);
     startAddress = strtol(objCode[line].substr(1, 6).c_str(), nullptr, 16);
-    handleRESB();
+    handleRESB(); //handle gap between previous address and curr address if it exists
     currAddress = startAddress;
-    for (int i = 9 ; i < 9 + textSize*2 ;) { //Each loops hands one line
+    for (int i = 9 ; i < 9 + textSize*2 ;) { //each i is one half bit
         for (auto & l : litTab) //Handle LTORG
             if (l.address == currAddress)
                 if (l.name == "*") {
@@ -85,11 +83,11 @@ void disass::handleText(int line) {
             if (l.address == currAddress) {
                 litfound = true;
                 string litConst;
-                if (l.name == "*") {
+                if (l.name == "*") { //LTORG or end of program declaration
                     printCol2("");
                     printCol2(l.name);
                     litConst = l.litconst.substr(3, l.length);
-                } else {
+                } else { //normal lit use
                     printCol2(l.name);
                     printCol2("BYTE");
                     litConst = l.litconst.substr(2, l.length);
@@ -104,29 +102,31 @@ void disass::handleText(int line) {
             continue;
         printCol2(toPrint); //prints symbol if found, otherwise blanks
 
-        Opcode::opCodeInfo a = Opcode::translate(strtol(objCode[line].substr(i, 3).c_str(), nullptr, 16));
-        printCol3(a.mnemonic, a.format);
+        Opcode::opCodeInfo a = Opcode::translate(strtol(objCode[line].substr(i, 3).c_str(), nullptr, 16)); //get opcode/nixbpe info
+        printCol3(a.mnemonic, a.format); //print Col3
         int disp;
-        if (a.format == 2)
+        if (a.format == 2) //set disp based on format
             disp = strtol(objCode[line].substr(i+2, 2).c_str(), nullptr, 16);
         else
             disp = strtol(objCode[line].substr(i+3, a.format*2 - 3).c_str(), nullptr, 16);
-        pcAddress = currAddress + a.format;
-        string col4 = findCol4(a.nixbpe, disp, a.format);
-        printCol4(col4);
-        printObjCol(strtol(objCode[line].substr(i, a.format*2).c_str(), nullptr, 16), a.format);
+        pcAddress = currAddress + a.format; //increment PC address
+        string col4 = findCol4(a.nixbpe, disp, a.format); //find col4 string
+        if (a.mnemonic == "RSUB") //handle RSUB like described in class (not in either test case)
+            col4 = "";
+        printCol4(col4); //print Col4
+        printObjCol(strtol(objCode[line].substr(i, a.format*2).c_str(), nullptr, 16), a.format); //print Object Code
         if (a.mnemonic == "LDX") //load x
             xIndex = strtol(objCode[line].substr(i+3, 3).c_str(), nullptr, 16);
-        currAddress += a.format;
-        i += a.format*2;
+        currAddress += a.format; //increment current address
+        i += a.format*2; //increment start of next instruction in Object Code string
 
         if (a.mnemonic == "LDB") { //handle Base
             lstStream << "     " << setw(8) << setfill(' ') << left << "" << setw(8) << "BASE";
-            if (col4[0] == '@' || col4[0] == '#')
+            if (col4[0] == '@' || col4[0] == '#') //remove @ and # if necessary
                 col4 = col4.substr(1, col4.length()-1);
             printCol4(col4);
             lstStream << endl;
-            for (auto & s : symTab)
+            for (auto & s : symTab) //find address that corresponds to base address
                 if (s.symbol == col4) {
                     baseAddress = s.address;
                     break;
