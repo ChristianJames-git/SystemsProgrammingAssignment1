@@ -6,13 +6,8 @@
 #define ASSIGNMENT_1_DISASS_H
 
 #include "Opcode.h"
-#include <cstdio>
-#include <fstream>
-#include <vector>
-#include <cstdlib>
-#include <iomanip>
 
-class Disass {
+class disass {
 public:
     void openFile (char *objFile, char *symFile);
     void closeOutStream();

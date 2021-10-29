@@ -13,14 +13,6 @@ bitset
 -
 iostream
 -
-
-D:/School/College/5th Semester/CS 530/Assignment 1/disass.cpp
-disass.h
-D:/School/College/5th Semester/CS 530/Assignment 1/disass.h
-
-D:/School/College/5th Semester/CS 530/Assignment 1/disass.h
-Opcode.h
-D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.h
 cstdio
 -
 fstream
@@ -31,4 +23,12 @@ cstdlib
 -
 iomanip
 -
+
+D:/School/College/5th Semester/CS 530/Assignment 1/disass.cpp
+disass.h
+D:/School/College/5th Semester/CS 530/Assignment 1/disass.h
+
+D:/School/College/5th Semester/CS 530/Assignment 1/disass.h
+Opcode.h
+D:/School/College/5th Semester/CS 530/Assignment 1/Opcode.h
 

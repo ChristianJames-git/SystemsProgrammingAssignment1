@@ -12,6 +12,11 @@
 #include <string>
 #include <bitset>
 #include <iostream>
+#include <cstdio>
+#include <fstream>
+#include <vector>
+#include <cstdlib>
+#include <iomanip>
 
 using namespace std;
 

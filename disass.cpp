@@ -7,9 +7,9 @@
 /*
  * Controller public function
  */
-void Disass::disassemble() {
+void disass::disassemble() {
     for (int i = 0 ; i < objCode.size() ; i++) {
-        switch (objCode[i][0]) {
+        switch (objCode[i][0]) { //Ignore 'M' rows. Handle 'H', 'T', and 'E'
             case 'H':
                 handleHeader(i);
                 break;
@@ -28,19 +28,19 @@ void Disass::disassemble() {
 /*
  * Handles the Header line of the object code
  */
-void Disass::handleHeader(int line) {
-    progName = objCode[line].substr(1, 6);
-    progLength = strtol(objCode[line].substr(13, 6).c_str(), nullptr, 16);
+void disass::handleHeader(int line) {
+    progName = objCode[line].substr(1, 6); //progName
+    progLength = strtol(objCode[line].substr(13, 6).c_str(), nullptr, 16); //progLength
     startAddress = strtol(objCode[line].substr(7, 6).c_str(), nullptr, 16); //strtol(string to convert, end, base)
     currAddress = startAddress;
     printAddress(currAddress);
-    lstStream << uppercase << progName << "  " << "START   " << startAddress << endl;
+    lstStream << uppercase << progName << "  " << "START   " << startAddress << endl; //print first output line
 }
 
 /*
  * Handles a Text line of the object code
  */
-void Disass::handleRESB() {
+void disass::handleRESB() {
     for (int i = 0 ; i < symTab.size() ; i++) { //Handles RESB cases
         if (symTab[i].address >= currAddress && symTab[i].address < startAddress) {
             printAddress(symTab[i].address);
@@ -58,7 +58,7 @@ void Disass::handleRESB() {
         }
     }
 }
-void Disass::handleText(int line) {
+void disass::handleText(int line) {
     int textSize = strtol(objCode[line].substr(7, 2).c_str(), nullptr, 16);
     startAddress = strtol(objCode[line].substr(1, 6).c_str(), nullptr, 16);
     handleRESB();
@@ -138,10 +138,10 @@ void Disass::handleText(int line) {
 /*
  * Handles the End line of the object code
  */
-void Disass::handleEnd(int line) {
+void disass::handleEnd(int line) {
     startAddress = progLength;
-    handleRESB();
-    lstStream << setfill(' ') << setw(16) << right << "END" << setw(11) << progName << endl;
+    handleRESB(); //add RESB if there is a gap in addresses
+    lstStream << setfill(' ') << setw(16) << right << "END" << setw(11) << progName << endl; //print end line
 }
 
 /*
@@ -149,26 +149,27 @@ void Disass::handleEnd(int line) {
  * Opens obj and sym files, exiting if they aren't found
  * Creates and opens output stream to output file
  */
-void Disass::openFile(char *objFile, char *symFile) {
+void disass::openFile(char *objFile, char *symFile) { //read in both input files and open output stream
     inStream.open(objFile);
-    if (!inStream.is_open()) {
+    if (!inStream.is_open()) { //check if .obj file was opened successfully
         cout << ".obj file missing" << endl;
         exit(EXIT_FAILURE);
     }
-    readIn(&objCode);
+    readIn(&objCode); //read in .obj file into storage
     inStream.close();
     inStream.open(symFile);
-    if (!inStream.is_open()) {
+    if (!inStream.is_open()) { //check if .sym file was opened successfully
         cout << ".sym file missing" << endl;
         exit(EXIT_FAILURE);
     }
-    readIn(&symStorage);
+    readIn(&symStorage); //read in .sym file into storage
     inStream.close();
     lstStream.open("out.lst", ios::out);
-    if (!lstStream.is_open()) {
+    if (!lstStream.is_open()) { //check if output file was created and opened successfully
         cout << "Error in creating file" << endl;
         exit(EXIT_FAILURE);
     }
+
     int i = 2;
     for ( ; symStorage[i].substr(0, 4) != "Name" ; i++) { //loops through rows of sym table
         struct sym a;
@@ -176,31 +177,28 @@ void Disass::openFile(char *objFile, char *symFile) {
         while (symStorage[i][temp] != ' ') //counts symbol char length
             temp++;
         a.symbol = symStorage[i].substr(0, temp); //stores symbol
-        a.address = strtol(symStorage[i].substr(8, 6).c_str(), nullptr, 16);
-        symTab.push_back(a);
+        a.address = strtol(symStorage[i].substr(8, 6).c_str(), nullptr, 16); //stores address
+        symTab.push_back(a); //add struct to vector symTab
     }
-    for (int j = 0 ; j < symTab.size() ; j++) {
-        if (symTab[j].symbol == "BADR")
-            symTab[j].decimal = symTab[j + 1].address - symTab[j].address;
-    }
-    for (int j = i+2 ; j < symStorage.size() ; j++) {
+
+    for (int j = i+2 ; j < symStorage.size() ; j++) { //loops through rows of lit table
         struct lit a;
         a.length = symStorage[j][20] - '0';
         int temp = 0;
         while (symStorage[j][temp] != ' ') //counts name char length
             temp++;
-        if (temp == 0) {
+        if (temp == 0) { //handle literal declarations
             a.name = "*";
             a.litconst = symStorage[j].substr(8, a.length+4);
-        } else {
+        } else { //non-declaration literals
             a.name = symStorage[j].substr(0, temp); //stores name
             a.litconst = symStorage[j].substr(8, a.length+3);
         }
         a.address = strtol(symStorage[j].substr(24, 6).c_str(), nullptr, 16);
-        litTab.push_back(a);
+        litTab.push_back(a); //add struct to vector litTab
     }
 }
-void Disass::closeOutStream() {
+void disass::closeOutStream() { //closes lstStream
     if (lstStream.is_open())
         lstStream.close();
     else {
@@ -212,26 +210,26 @@ void Disass::closeOutStream() {
 /*
  * Reads in the current open in-file into the vector pointed at
  */
-void Disass::readIn(vector<string> *storage) {
+void disass::readIn(vector<string> *storage) {
     string nextLine;
-    while (inStream.good()) {
+    while (inStream.good()) { //read in each line until eof
         getline(inStream, nextLine);
-        if (nextLine.empty())
+        if (nextLine.empty()) //skip over blank lines
             continue;
-        storage->push_back(nextLine);
+        storage->push_back(nextLine); //add each line to given storage vector
     }
 };
 
 /*
  * Helper function to print 4 digit addresses in hex format with buffer 0's
  */
-void Disass::printAddress(int address) {
+void disass::printAddress(int address) { //format 4 digit address printing
     lstStream << setw(4) << setfill('0') << right << hex << address << " ";
 }
-void Disass::printCol2(const string& toPrint) {
+void disass::printCol2(const string& toPrint) { //format 8 digit Column 2 (and sometimes Column 3) printing
     lstStream << left << setw(8) << setfill(' ') << toPrint;
 }
-void Disass::printCol3(const string& mnemonic, int format) {
+void disass::printCol3(const string& mnemonic, int format) { //add '+' if format 4, then call printCol2
     string s = "+";
     if (format == 4)
         s += mnemonic;
@@ -239,23 +237,23 @@ void Disass::printCol3(const string& mnemonic, int format) {
         s = mnemonic;
     printCol2(s);
 }
-string Disass::findCol4(bitset<6> nixbpe, int disp, int format) {
+string disass::findCol4(bitset<6> nixbpe, int disp, int format) { //handle Column 4
     string toPrint;
-    if (format == 2)
+    if (format == 2) //handle CLEAR
         if (disp < Opcode::registerName->length())
-            return Opcode::registerName[disp];
+            return Opcode::registerName[disp/16]; // div16 as CLEAR only uses the first half byte
     int type;
     int address;
     if (nixbpe[5] & nixbpe[4] || !nixbpe[5] & !nixbpe[4]) {
-        type = 0;
+        type = 0; //simple
     } else if (nixbpe[5] & !nixbpe[4]) {
         toPrint += "@";
-        type = 1;
+        type = 1; //indirect
     } else {
         toPrint += "#";
-        type = 2;
+        type = 2; //immediate
     }
-    if (nixbpe[0]) {
+    if (nixbpe[0]) { //direct for format 4
         address = disp;
     } else {
         if (type == 2) { //Immediate Addressing
@@ -263,10 +261,10 @@ string Disass::findCol4(bitset<6> nixbpe, int disp, int format) {
             return toPrint;
         }
         bitset<12> a = disp;
-        if (a[11]) {
+        if (a[11]) { //handle signed disp
             a.flip();
             bool carry = true;
-            for (int i = 0 ; ; i++) {
+            for (int i = 0 ; ; i++) { //add 1
                 if (carry) {
                     a[i] = !a[i];
                     if (a[i])
@@ -276,30 +274,23 @@ string Disass::findCol4(bitset<6> nixbpe, int disp, int format) {
             }
             disp = (int)a.to_ulong() * -1;
         }
-        if (nixbpe[1])
+        if (nixbpe[1]) //PC Relative
             address = disp + pcAddress;
-        if (nixbpe[2])
+        if (nixbpe[2]) //Base Relative
             address = disp + baseAddress;
-        if (type == 1) {
-            for (auto & s : symTab)
-                if (s.address == address) {
-                    //address += s.decimal;
-                    break;
-                }
-        }
     }
-    if (nixbpe[3])
+    if (nixbpe[3]) //indexed
         address += xIndex;
-    toPrint += findInTab(address);
-    if (nixbpe[3])
+    toPrint += findInTab(address); //find which symbol/lit to use
+    if (nixbpe[3]) //printout indexed ,X
         toPrint += ",X";
     return toPrint;
 }
-string Disass::findInTab(int address) {
-    for (auto & s : symTab)
+string disass::findInTab(int address) { //return symbol/name given address
+    for (auto & s : symTab) //search symTab
         if (s.address == address)
             return s.symbol;
-    for (auto & l : litTab)
+    for (auto & l : litTab) //search litTab
         if (l.address == address) {
             if (l.name == "*")
                 return l.litconst;
@@ -307,9 +298,9 @@ string Disass::findInTab(int address) {
         }
     return "Invalid";
 }
-void Disass::printCol4(const string& toPrint) {
+void disass::printCol4(const string& toPrint) { //print Column 4, 14 digit
     lstStream << left << setw(14) << setfill(' ') << toPrint;
 }
-void Disass::printObjCol(int obCode, int format) {
+void disass::printObjCol(int obCode, int format) { //print Object Code Column
     lstStream << right << setw(format*2) << setfill('0') << obCode << endl;
 }
